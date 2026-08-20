@@ -211,6 +211,45 @@
             .glass-container { padding: 30px 20px; }
             .header-section h2 { font-size: 1.8rem; }
         }
+
+        /* Custom Range Sliders */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+            margin-top: 10px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            transition: transform 0.1s;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #cbd5e1;
+            border-radius: 5px;
+        }
+        
+        .score-display {
+            color: #3b82f6;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-left: 5px;
+        }
     </style>
 </head>
 <body>
@@ -320,14 +359,22 @@
                 </select>
             </div>
             
-            <div class="input-group">
-                <label><i class="fa-solid fa-book"></i> Reading Score (0-100)</label>
-                <input type="number" name="ReadingScore" value="75" min="0" max="100" required>
+           <div class="input-group" style="grid-column: 1 / -1; margin-top: 10px;">
+                <label>
+                    <i class="fa-solid fa-book"></i> Reading Score: 
+                    <span id="read-val" class="score-display">75</span> / 100
+                </label>
+                <input type="range" name="ReadingScore" id="read-slider" value="75" min="0" max="100" 
+                       oninput="document.getElementById('read-val').innerText = this.value">
             </div>
 
-            <div class="input-group">
-                <label><i class="fa-solid fa-pen-nib"></i> Writing Score (0-100)</label>
-                <input type="number" name="WritingScore" value="75" min="0" max="100" required>
+            <div class="input-group" style="grid-column: 1 / -1; margin-bottom: 20px;">
+                <label>
+                    <i class="fa-solid fa-pen-nib"></i> Writing Score: 
+                    <span id="write-val" class="score-display">75</span> / 100
+                </label>
+                <input type="range" name="WritingScore" id="write-slider" value="75" min="0" max="100" 
+                       oninput="document.getElementById('write-val').innerText = this.value">
             </div>
 
             <button type="submit" class="btn-submit" id="submit-btn">
