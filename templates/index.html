@@ -342,6 +342,17 @@
                     <i class="fa-solid fa-chart-line"></i>
                     {{ prediction_text }}
                 </div>
+
+                {% if insights %}
+                    <div style="margin-top: 20px; text-align: left; background: #eff6ff; padding: 20px; border-radius: 12px; border: 1px solid #bfdbfe; grid-column: 1 / -1;">
+                        <h3 style="color: #1e40af; margin-bottom: 10px; font-size: 1.1rem;"><i class="fa-solid fa-lightbulb"></i> Personalized AI Insights</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            {% for insight in insights %}
+                                <li style="margin-bottom: 8px; color: #1e3a8a; font-size: 0.95rem;">• {{ insight }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
             {% endif %}
 
         </form>

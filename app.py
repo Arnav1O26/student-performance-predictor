@@ -37,8 +37,21 @@ def predict():
         # 3. Predict the Math Score
         prediction = pipeline.predict(input_df)[0]
         
-        # 4. Return the result to the webpage
-        return render_template('index.html', prediction_text=f'Predicted Math Score: {prediction:.1f} / 100')
+        # 4. Generate Insights based on user input
+        insights = []
+        if request.form['TestPrep'] == 'none':
+            insights.append("🚀 Consider completing a Test Preparation course; this is one of the highest predictors of score improvement.")
+        if request.form['WklyStudyHours'] == '< 5':
+            insights.append("📚 Increasing your weekly study time to 5-10 hours could significantly boost your performance.")
+        if float(request.form['ReadingScore']) < 60:
+            insights.append("📖 Your reading score is a bit low. Improving reading speed and comprehension often benefits math word-problem performance.")
+        
+        # 5. Return prediction AND insights to the template
+        return render_template(
+            'index.html', 
+            prediction_text=f'Predicted Math Score: {prediction:.1f} / 100',
+            insights=insights
+        )
 
 if __name__ == '__main__':
     app.run(debug=True)
