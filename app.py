@@ -50,6 +50,7 @@ def predict():
         return render_template(
             'index.html', 
             prediction_text=f'Predicted Math Score: {prediction:.1f} / 100',
+            prediction_score=prediction,  # ADD THIS LINE for the gauge chart!
             insights=insights
         )
 

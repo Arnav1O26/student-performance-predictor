@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for the Speedometer Gauge -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         /* CSS Reset & Variables */
@@ -385,11 +387,21 @@
 
             <!-- Flask Jinja Output -->
             {% if prediction_text %}
-                <div class="result-container">
-                    <i class="fa-solid fa-chart-line"></i>
-                    {{ prediction_text }}
+                <div class="result-container" style="flex-direction: column; align-items: center; gap: 0;">
+                    <!-- The Gauge Chart Canvas -->
+                    <div style="width: 250px; height: 125px; position: relative; margin-bottom: 10px;">
+                        <canvas id="scoreGauge"></canvas>
+                        <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); font-size: 2rem; font-weight: 800; color: #1e293b;">
+                            {{ "%.1f"|format(prediction_score) }}
+                        </div>
+                    </div>
+                    
+                    <div style="font-size: 1.2rem; color: #475569; margin-top: 10px;">
+                        <i class="fa-solid fa-chart-line"></i> {{ prediction_text }}
+                    </div>
                 </div>
-
+                
+                <!-- Personalized AI Insights -->
                 {% if insights %}
                     <div style="margin-top: 20px; text-align: left; background: #eff6ff; padding: 20px; border-radius: 12px; border: 1px solid #bfdbfe; grid-column: 1 / -1;">
                         <h3 style="color: #1e40af; margin-bottom: 10px; font-size: 1.1rem;"><i class="fa-solid fa-lightbulb"></i> Personalized AI Insights</h3>
@@ -400,6 +412,37 @@
                         </ul>
                     </div>
                 {% endif %}
+
+                <!-- Chart.js Animation Logic -->
+                <script>
+                    const ctx = document.getElementById('scoreGauge').getContext('2d');
+                    const score = {{ prediction_score }};
+                    
+                    // Determine Color based on score
+                    let barColor = '#ef4444'; // Red for low scores
+                    if (score >= 60 && score < 80) barColor = '#eab308'; // Yellow for average
+                    if (score >= 80) barColor = '#22c55e'; // Green for excellent
+
+                    new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            datasets: [{
+                                data: [score, 100 - score],
+                                backgroundColor: [barColor, '#e2e8f0'],
+                                borderWidth: 0,
+                                circumference: 180, // Makes it a half-circle
+                                rotation: 270 // Rotates it to look like a speedometer
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: '75%', // Thickness of the ring
+                            plugins: { tooltip: { enabled: false } },
+                            animation: { duration: 1500, easing: 'easeOutQuart' } // Smooth sweep animation
+                        }
+                    });
+                </script>
             {% endif %}
 
         </form>
