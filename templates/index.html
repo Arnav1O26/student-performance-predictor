@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance AI Predictor</title>
+    
+    <!-- Google Fonts: Poppins for a very modern, geometric look -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* CSS Reset & Variables */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* 
+           The Live Flowing Gradient Background
+           We make it 400% size and pan it smoothly using keyframes
+        */
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientFlow 15s ease infinite;
+            color: #1e293b;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glassmorphism Container */
+        .glass-container {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 24px;
+            padding: 50px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            animation: fadeUp 0.8s ease-out;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography */
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-section h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #1e293b, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header-section p {
+            color: #475569;
+            font-weight: 400;
+            font-size: 1rem;
+        }
+
+        /* Grid Layout for Form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        /* Input Styling */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-group label i {
+            color: #3b82f6;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: #1e293b;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            appearance: none; /* removes default browser arrows on select */
+            outline: none;
+        }
+
+        /* Custom Dropdown Arrow */
+        select {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%233b82f6%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px top 50%;
+            background-size: 12px auto;
+        }
+
+        select:focus, input[type="number"]:focus {
+            border-color: #3b82f6;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            grid-column: 1 / -1; /* Spans full width */
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 14px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.5);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Result Box styling */
+        .result-container {
+            grid-column: 1 / -1;
+            margin-top: 25px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.85);
+            border-left: 6px solid #10b981;
+            border-radius: 12px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #064e3b;
+            text-align: center;
+            animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .glass-container { padding: 30px 20px; }
+            .header-section h2 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glass-container">
+        
+        <div class="header-section">
+            <h2><i class="fa-solid fa-brain"></i> AI Performance Predictor</h2>
+            <p>Enter the student's demographic and academic profile to predict their final Math Score.</p>
+        </div>
+
+        <form action="/predict" method="POST" class="form-grid" id="predict-form">
+            
+            <div class="input-group">
+                <label><i class="fa-solid fa-venus-mars"></i> Gender</label>
+                <select name="Gender">
+                    <option value="female">Female</option>
+                    <option value="male">Male</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-users"></i> Ethnic Group</label>
+                <select name="EthnicGroup">
+                    <option value="group A">Group A</option>
+                    <option value="group B">Group B</option>
+                    <option value="group C">Group C</option>
+                    <option value="group D">Group D</option>
+                    <option value="group E">Group E</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-graduation-cap"></i> Parent's Education</label>
+                <select name="ParentEduc">
+                    <option value="some high school">Some High School</option>
+                    <option value="high school">High School</option>
+                    <option value="some college">Some College</option>
+                    <option value="associate's degree">Associate's Degree</option>
+                    <option value="bachelor's degree">Bachelor's Degree</option>
+                    <option value="master's degree">Master's Degree</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-utensils"></i> Lunch Type</label>
+                <select name="LunchType">
+                    <option value="standard">Standard</option>
+                    <option value="free/reduced">Free/Reduced</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-book-open-reader"></i> Test Preparation</label>
+                <select name="TestPrep">
+                    <option value="none">None</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-ring"></i> Parent Marital Status</label>
+                <select name="ParentMaritalStatus">
+                    <option value="married">Married</option>
+                    <option value="single">Single</option>
+                    <option value="divorced">Divorced</option>
+                    <option value="widowed">Widowed</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-basketball"></i> Practice Sport</label>
+                <select name="PracticeSport">
+                    <option value="never">Never</option>
+                    <option value="sometimes">Sometimes</option>
+                    <option value="regularly">Regularly</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-child"></i> Is First Child?</label>
+                <select name="IsFirstChild">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-people-roof"></i> Number of Siblings</label>
+                <input type="number" name="NrSiblings" value="1" min="0" max="10" required>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-bus"></i> Transport Means</label>
+                <select name="TransportMeans">
+                    <option value="school_bus">School Bus</option>
+                    <option value="private">Private</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-clock"></i> Weekly Study Hours</label>
+                <select name="WklyStudyHours">
+                    <option value="< 5">Less than 5 hours</option>
+                    <option value="5 - 10">5 to 10 hours</option>
+                    <option value="> 10">More than 10 hours</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label><i class="fa-solid fa-book"></i> Reading Score (0-100)</label>
+                <input type="number" name="ReadingScore" value="75" min="0" max="100" required>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-pen-nib"></i> Writing Score (0-100)</label>
+                <input type="number" name="WritingScore" value="75" min="0" max="100" required>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submit-btn">
+                <span id="btn-text">Run Prediction Engine</span>
+                <i class="fa-solid fa-arrow-right" id="btn-icon"></i>
+                <div class="spinner" id="spinner"></div>
+            </button>
+
+            <!-- Flask Jinja Output -->
+            {% if prediction_text %}
+                <div class="result-container">
+                    <i class="fa-solid fa-chart-line"></i>
+                    {{ prediction_text }}
+                </div>
+            {% endif %}
+
+        </form>
+    </div>
+
+    <!-- JavaScript to handle the loading animation state -->
+    <script>
+        document.getElementById('predict-form').addEventListener('submit', function() {
+            document.getElementById('btn-text').innerText = 'Analyzing Data...';
+            document.getElementById('btn-icon').style.display = 'none';
+            document.getElementById('spinner').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
